@@ -2,7 +2,13 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MINI ROYALE">
+<meta name="theme-color" content="#0b0d0f">
+<link rel="manifest" href='data:application/json,{"name":"MINI ROYALE","short_name":"ROYALE","start_url":".","display":"fullscreen","orientation":"landscape","background_color":"%230b0d0f","theme_color":"%230b0d0f"}'>
 <title>MINI ROYALE — Realism Build</title>
 <style>
   :root{
@@ -385,48 +391,93 @@
   .slot .cost{font-size:9px;color:var(--hot);letter-spacing:.06em}
   .slot.nomat .cost{color:var(--bad)}
   /* ===== タッチ操作 ===== */
-  html.touch,html.touch body{touch-action:none;-webkit-user-select:none;user-select:none;
+  html.touch,html.touch body{position:fixed;left:0;top:0;right:0;bottom:0;
+    width:100%;height:100%;margin:0;padding:0;overflow:hidden;
+    touch-action:none;-webkit-user-select:none;user-select:none;
     -webkit-tap-highlight-color:transparent;overscroll-behavior:none}
+  html.touch canvas{position:fixed;left:0;top:0}
   #touch{position:fixed;inset:0;display:none;z-index:8;pointer-events:none}
   #touch.on{display:block}
-  #tstick{position:absolute;width:132px;height:132px;border-radius:50%;
-    border:2px solid rgba(255,255,255,.28);background:rgba(11,13,15,.35);
+  #tstick{position:absolute;width:112px;height:112px;border-radius:50%;
+    border:2px solid rgba(255,255,255,.26);background:rgba(11,13,15,.3);
     display:none;pointer-events:none}
   #tstick.on{display:block}
-  #tknob{position:absolute;left:50%;top:50%;width:56px;height:56px;border-radius:50%;
-    margin:-28px 0 0 -28px;background:rgba(232,196,106,.8);
-    box-shadow:0 0 14px rgba(0,0,0,.6)}
-  .tbtn{position:absolute;pointer-events:auto;border-radius:50%;
-    background:rgba(11,13,15,.5);border:2px solid rgba(255,255,255,.3);
-    color:#e6eaee;font:inherit;font-size:11px;letter-spacing:.04em;
-    display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.2}
+  #tknob{position:absolute;left:50%;top:50%;width:46px;height:46px;border-radius:50%;
+    margin:-23px 0 0 -23px;background:rgba(232,196,106,.75);
+    box-shadow:0 0 12px rgba(0,0,0,.6)}
+
+  .tbtn{position:absolute;pointer-events:auto;border-radius:50%;padding:0;
+    box-sizing:border-box;flex:none;white-space:nowrap;overflow:hidden;
+    background:rgba(11,13,15,.42);border:1.5px solid rgba(255,255,255,.3);
+    color:#e6eaee;font-family:inherit;font-size:10px;letter-spacing:0;line-height:1;
+    display:flex;align-items:center;justify-content:center;text-align:center}
   .tbtn.press{background:rgba(232,196,106,.55);border-color:var(--hot);color:#0b0d0f}
   .tbtn.act{border-color:var(--hot);color:var(--hot)}
-  #tFire{right:26px;bottom:104px;width:104px;height:104px;font-size:14px;
-    background:rgba(216,69,63,.35);border-color:rgba(255,120,110,.6)}
-  #tAds{right:146px;bottom:150px;width:66px;height:66px}
-  #tJump{right:146px;bottom:62px;width:66px;height:66px}
-  #tCrouch{right:26px;bottom:24px;width:62px;height:62px}
-  #tReload{right:220px;bottom:110px;width:62px;height:62px}
-  #tUse{right:104px;bottom:224px;width:72px;height:72px;
-    background:rgba(232,196,106,.3);border-color:var(--hot)}
-  #tHeal{right:196px;bottom:224px;width:58px;height:58px}
-  #tShield{right:262px;bottom:190px;width:58px;height:58px}
-  #tBomb{right:300px;bottom:110px;width:58px;height:58px}
-  #tView{left:26px;top:210px;width:56px;height:56px}
-  #tMap{left:92px;top:210px;width:56px;height:56px}
-  #tMenu{left:26px;top:150px;width:56px;height:56px}
-  html.touch #slots .slot{pointer-events:auto;width:64px;height:52px}
+  .tbtn.hide{display:none}
+
+  /* 右手：3列に整理して重ならないように */
+  #tFire  {right:16px; bottom:16px;  width:84px;height:84px;font-size:13px;
+           background:rgba(200,60,55,.34);border-color:rgba(255,120,110,.6)}
+  #tAds   {right:32px; bottom:110px; width:50px;height:50px}
+  #tJump  {right:108px;bottom:26px;  width:56px;height:56px;font-size:11px}
+  #tCrouch{right:110px;bottom:92px;  width:50px;height:50px}
+  #tBomb  {right:110px;bottom:150px; width:46px;height:46px}
+  #tReload{right:172px;bottom:32px;  width:50px;height:50px}
+  #tHeal  {right:170px;bottom:92px;  width:46px;height:46px}
+  #tShield{right:170px;bottom:148px; width:46px;height:46px}
+  #tBuild {right:228px;bottom:28px;  width:58px;height:58px;font-size:11px;
+           background:rgba(95,214,200,.22);border-color:rgba(95,214,200,.65)}
+  #tUse   {right:228px;bottom:96px;  width:56px;height:56px;font-size:11px;
+           background:rgba(232,196,106,.3);border-color:var(--hot)}
+  /* 右上：小さく3つ */
+  #tMenu  {right:14px; top:12px; width:38px;height:38px;font-size:15px}
+  #tMap   {right:58px; top:12px; width:38px;height:38px}
+  #tView  {right:102px;top:12px; width:38px;height:38px}
+
+  /* スマホ用にHUDを縮小して再配置 */
   html.touch #hints{display:none}
-  html.touch #mapWrap{width:128px;height:128px;left:14px;top:14px}
+  html.touch #mapWrap{width:92px;height:92px;left:10px;top:10px;border-width:1px}
   html.touch #mapInfo{display:none}
-  html.touch #vitals{left:16px;bottom:96px;width:190px}
-  html.touch #consum,html.touch #matsRow,html.touch #ammo{right:auto;left:16px}
-  html.touch #ammo{bottom:20px;text-align:left}
-  html.touch #matsRow{bottom:60px;text-align:left}
-  html.touch #consum{bottom:150px;text-align:left}
-  html.touch #speedo{right:auto;left:16px;bottom:20px}
-  html.touch #slots{bottom:10px}
+  html.touch #topbar{top:6px;left:auto;right:150px;transform:none;gap:1px}
+  html.touch .chip{padding:3px 8px;min-width:54px}
+  html.touch .chip b{font-size:13px}
+  html.touch .chip em{font-size:7px;letter-spacing:.1em}
+  html.touch #feed{top:108px;left:10px;right:auto;width:150px;text-align:left;font-size:9px}
+  html.touch #feed div{padding:1px 0}
+  html.touch #vitals{left:10px;bottom:74px;width:150px}
+  html.touch .vrow{font-size:8px}
+  html.touch .vrow b{font-size:12px}
+  html.touch #ammo{right:auto;left:10px;bottom:10px;text-align:left}
+  html.touch #ammoMain{font-size:24px}
+  html.touch #ammoLabel{font-size:8px;letter-spacing:.1em}
+  html.touch #reloading{font-size:9px;height:10px}
+  html.touch #matsRow{right:auto;left:10px;bottom:52px;font-size:8px;text-align:left}
+  html.touch #matsRow b{font-size:12px}
+  html.touch #consum{right:auto;left:118px;bottom:10px;text-align:left}
+  html.touch #consum div{font-size:8px;margin-bottom:2px}
+  html.touch #consum div b{font-size:11px;margin-left:4px}
+  html.touch #spiritBox{display:none}
+  html.touch #speedo{right:auto;left:10px;bottom:10px}
+  html.touch #slots{bottom:4px;left:50%;gap:1px}
+  html.touch .slot{width:48px;height:34px;pointer-events:auto}
+  html.touch .slot[data-s="4"],html.touch .slot[data-s="5"],html.touch .slot[data-s="6"]{display:none}
+  html.touch .slot .nm{font-size:8px}
+  html.touch .slot .k{display:none}
+  html.touch .slot .cost{font-size:7px}
+  html.touch #mateMarks .chip2{font-size:8px;padding:1px 4px}
+  html.touch #useWrap{bottom:120px;width:160px}
+  html.touch #drop{top:46%}
+  html.touch #dropAlt{font-size:22px}
+  html.touch #dropMsg{font-size:9px}
+  html.touch #bigmap canvas{width:min(86vh,86vw);height:min(86vh,86vw)}
+  html.touch #lobbyPanel{width:94vw}
+  html.touch #startScreen{padding:14px 0 14px 14px}
+  html.touch .pane{padding:12px 0 4px}
+  html.touch #startScreen h1{font-size:24px}
+  html.touch .tab{padding:9px 13px;font-size:11px}
+  html.touch .pbtn{padding:9px 13px;font-size:11px}
+  html.touch .plabel{width:62px;font-size:10px}
+
   #rotateHint{position:fixed;inset:0;z-index:30;display:none;
     background:#0b0d0f;color:#e6eaee;align-items:center;justify-content:center;
     text-align:center;font-size:15px;line-height:2;padding:30px}
@@ -578,6 +629,7 @@
       <div><kbd>H</kbd> <span>シールドポーション</span></div>
       <div><kbd>V</kbd> <span>スコープ倍率</span></div>
       <div><kbd>T</kbd> <span>視点切替（一人称／俯瞰）</span></div>
+      <div>スマホ <span>照準補助・自動取得・1ボタン建築が有効</span></div>
       <div><kbd>M</kbd> <span>全体マップ</span></div>
       <div><kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd> <span>視点（予備）</span></div>
     </div>
@@ -585,24 +637,27 @@
 
   <div id="selSummary"><em>この設定で開始</em><span id="selText">—</span></div>
   <button id="startBtn">バスに乗る</button>
-  <p class="tip" style="position:static;margin-top:16px">PC・マウス＋キーボード専用　／　ESC でマウス解放</p>
+  <p class="tip" style="position:static;margin-top:16px">PCはマウス＋キーボード（ESCでメニュー）／ スマホはタッチ操作</p>
+  <p class="tip" id="pwaTip" style="position:static;margin-top:6px;display:none;color:#e8c46a">
+    iPhoneは共有ボタン →「ホーム画面に追加」で起動すると、アドレスバーが消えて全画面になります</p>
  </div>
 </div>
 
 <div id="touch">
   <div id="tstick"><i id="tknob"></i></div>
   <button class="tbtn" id="tFire" data-t="fire">うつ</button>
-  <button class="tbtn" id="tAds" data-t="ads">かまえる</button>
-  <button class="tbtn" id="tJump" data-t="jump">ジャンプ</button>
+  <button class="tbtn" id="tAds" data-t="ads">構え</button>
+  <button class="tbtn" id="tJump" data-t="jump">跳ぶ</button>
   <button class="tbtn" id="tCrouch" data-t="crouch">しゃがむ</button>
-  <button class="tbtn" id="tReload" data-t="reload">リロード</button>
-  <button class="tbtn" id="tUse" data-t="use">ひろう<br>あける</button>
-  <button class="tbtn" id="tHeal" data-t="heal">かいふく</button>
-  <button class="tbtn" id="tShield" data-t="shield">シールド</button>
-  <button class="tbtn" id="tBomb" data-t="bomb">ばくだん</button>
-  <button class="tbtn" id="tView" data-t="view">してん</button>
-  <button class="tbtn" id="tMap" data-t="map">マップ</button>
-  <button class="tbtn" id="tMenu" data-t="menu">メニュー</button>
+  <button class="tbtn" id="tReload" data-t="reload">装填</button>
+  <button class="tbtn" id="tBuild" data-t="build">建てる</button>
+  <button class="tbtn" id="tUse" data-t="use">ひろう</button>
+  <button class="tbtn" id="tHeal" data-t="heal">回復</button>
+  <button class="tbtn" id="tShield" data-t="shield">盾</button>
+  <button class="tbtn" id="tBomb" data-t="bomb">爆弾</button>
+  <button class="tbtn" id="tView" data-t="view">視点</button>
+  <button class="tbtn" id="tMap" data-t="map">地図</button>
+  <button class="tbtn" id="tMenu" data-t="menu">≡</button>
 </div>
 
 <div id="rotateHint">スマートフォンは<br><b>横向き</b>にしてください<br>
@@ -973,7 +1028,7 @@ function unlockNote(type,i){
   return "レベル"+tierOf(type,i)+"で解放";
 }
 function profileHash(){
-  return "d="+DIFF_KEY+"&m="+MAP_KEY+"&n="+TOTAL+"&s="+SKIN_I+"&a="+AXE_I+"&z="+SCOPE_I+"&q="+QUALITY+
+  return "d="+DIFF_KEY+"&m="+MAP_KEY+"&n="+TOTAL+"&s="+SKIN_I+"&a="+AXE_I+"&z="+SCOPE_I+"&q="+QUALITY+"&se="+SENS_K+"&bg="+(bgm.on?1:0)+
     "&tm="+TEAM_SIZE+"&g="+GAMEMODE+
     "&lv="+PROFILE.lv+"&xp="+PROFILE.xp+"&vb="+PROFILE.vb+
     (PROFILE.owned.length?("&ow="+PROFILE.owned.join(".")):"")+
@@ -1124,16 +1179,37 @@ var QUALS=[
    note:"影も遠景もフル表示。性能に余裕のあるPC向け。"}
 ];
 var QUALITY=(String(location.hash).match(/q=(low|mid|high)/)||[])[1]||"mid";
+var SENSES=[{k:"50",label:"とても低い",v:0.5},{k:"75",label:"低い",v:0.75},
+            {k:"100",label:"ふつう",v:1.0},{k:"150",label:"高い",v:1.5},
+            {k:"200",label:"とても高い",v:2.0}];
+var SENS_K=(String(location.hash).match(/se=(\d+)/)||[])[1]||"100";
+function sensMul(){
+  for(var i=0;i<SENSES.length;i++) if(SENSES[i].k===SENS_K) return SENSES[i].v;
+  return 1;
+}
 function Q(){
   for(var qi=0;qi<QUALS.length;qi++) if(QUALS[qi].k===QUALITY) return QUALS[qi];
   return QUALS[1];
+}
+function viewW(){ return Math.round(window.visualViewport?window.visualViewport.width:window.innerWidth); }
+function viewH(){ return Math.round(window.visualViewport?window.visualViewport.height:window.innerHeight); }
+function resizeRenderer(){
+  if(!renderer||!camera) return;
+  var w=viewW(), h=viewH();
+  camera.aspect=w/h;
+  camera.updateProjectionMatrix();
+  if(typeof lobbyCam!=="undefined"&&lobbyCam){
+    lobbyCam.aspect=w/h;
+    lobbyCam.updateProjectionMatrix();
+  }
+  renderer.setSize(w,h,true);
 }
 function applyQualityRuntime(){
   if(typeof renderer==="undefined"||!renderer) return;
   var q=Q();
   renderer.setPixelRatio(Math.min(window.devicePixelRatio,q.pr*(TOTAL>40?0.85:1)));
   renderer.shadowMap.enabled=q.shadow;
-  renderer.setSize(window.innerWidth,window.innerHeight);
+  resizeRenderer();
 }
 function lowerQuality(){
   if(QUALITY==="high") QUALITY="mid";
@@ -2737,6 +2813,7 @@ function spawnBots(){
       speed:4.5,skill:0.5,los:false,losT:rand(0,0.3),
       target:null,targetT:rand(0,0.8),reactT:0,wep:wepId,wm:wm,state:"ground",team:team,respawnT:0,
       rifle:rifle,chest:null,openT:0,noWepT:0,hpbar:hpbar,
+      mats:rand(60,200)|0,buildCD:rand(1,5),breakCD:0,
       boss:isBoss,bossSkin:isBoss?bossSkin:-1,
       phase:rand(0,6.28),legL:legL,legR:legR,armL:armL,armR:armR,
       head:helm,torso:torso,vest:vest,hips:hips,headBox:head};
@@ -2887,18 +2964,40 @@ function damageBuild(rec,dmg){
 /* =======================================================================
    AUDIO — ノイズ＋フィルタで銃声を合成
 ======================================================================= */
-var actx=null, noiseBuf=null, masterGain=null;
+var actx=null, noiseBuf=null, masterGain=null, sfxBus=null;
 var sfx={
   init:function(){
     try{
       actx=new (window.AudioContext||window.webkitAudioContext)();
       masterGain=actx.createGain(); masterGain.gain.value=0.55;
       masterGain.connect(actx.destination);
+      sfxBus=actx.createGain(); sfxBus.gain.value=1.0;
+      sfxBus.connect(masterGain);
       var len=actx.sampleRate*1.0;
       noiseBuf=actx.createBuffer(1,len,actx.sampleRate);
       var d=noiseBuf.getChannelData(0);
       for(var i=0;i<len;i++) d[i]=Math.random()*2-1;
     }catch(e){}
+  },
+  _pos:null,
+  at:function(x,y,z){ this._pos=[x,y,z]; return this; },
+  clr:function(){ this._pos=null; },
+  _dest:function(){
+    if(!actx) return null;
+    if(!this._pos) return sfxBus||masterGain;
+    var p=actx.createPanner();
+    try{
+      p.panningModel="HRTF";
+      p.distanceModel="inverse";
+      p.refDistance=10; p.maxDistance=320; p.rolloffFactor=1.3;
+      if(p.positionX){
+        p.positionX.value=this._pos[0];
+        p.positionY.value=this._pos[1];
+        p.positionZ.value=this._pos[2];
+      }else p.setPosition(this._pos[0],this._pos[1],this._pos[2]);
+    }catch(e){}
+    p.connect(sfxBus||masterGain);
+    return p;
   },
   noise:function(dur,type,freq,q,gain,when){
     if(!actx) return;
@@ -2908,7 +3007,7 @@ var sfx={
     var g=actx.createGain();
     g.gain.setValueAtTime(gain,t);
     g.gain.exponentialRampToValueAtTime(0.0006,t+dur);
-    s.connect(f); f.connect(g); g.connect(masterGain);
+    s.connect(f); f.connect(g); g.connect(this._dest());
     s.start(t); s.stop(t+dur+0.02);
   },
   tone:function(f0,f1,dur,type,gain,when){
@@ -2920,7 +3019,7 @@ var sfx={
     o.frequency.exponentialRampToValueAtTime(Math.max(20,f1),t+dur);
     g.gain.setValueAtTime(gain,t);
     g.gain.exponentialRampToValueAtTime(0.0005,t+dur);
-    o.connect(g); g.connect(masterGain);
+    o.connect(g); g.connect(this._dest());
     o.start(t); o.stop(t+dur+0.02);
   },
   shotAR:function(){
@@ -3613,6 +3712,8 @@ function shoot(){
 
 function hurtBot(bot,dmg,head,point,showMark){
   if(isMate(bot)) return;
+  if(bot.hp-dmg>0&&Math.random()<0.5) botBuildWall(bot);
+  if(showMark!==false) buzz(head?22:12);
   showDamage(point,dmg,head,bot.hp-dmg<=0);
   player.stats.dmg+=Math.min(dmg,bot.hp>0?bot.hp:0);
   bot.hp-=dmg;
@@ -3622,6 +3723,7 @@ function hurtBot(bot,dmg,head,point,showMark){
   if(showMark!==false){ hm.classList.remove("on","kill"); void hm.offsetWidth; }
   if(bot.hp<=0&&bot.alive){
     hm.classList.add("on","kill");
+    buzz([30,40,60]);
     killBot(bot,"あなた");
     player.kills++;
     player.mats=Math.min(999,player.mats+45);
@@ -3736,6 +3838,7 @@ function damagePlayer(dmg,fromStorm,srcPos){
   }
   player.hp-=d;
   player.hurtT=0.4;
+  buzz(fromStorm?18:38);
   $("hurt").style.opacity=Math.min(0.95,0.35+dmg/28);
   if(!fromStorm) sfx.hurt();
   if(srcPos) showDamageDir(srcPos);
@@ -3773,6 +3876,31 @@ function addFeed(by,name){
   while($("feed").children.length>5) $("feed").removeChild($("feed").lastChild);
 }
 var _lastLabel="", _lastPrompt="", _lastMates="", _lastConsum="", _lastSpirit="", _lastMats=-1, hudT=0;
+function setBtn(id,show){
+  var e=$(id);
+  if(e) e.classList.toggle("hide",!show);
+}
+function updateTouchButtons(){
+  if(!IS_TOUCH) return;
+  var air=(player.phase!=="ground");
+  var w=curWeapon();
+  var veh=!!player.vehicle;
+  setBtn("tFire",!air&&!veh);
+  setBtn("tAds",!air&&!veh&&!!w);
+  setBtn("tReload",!air&&!veh&&!!w);
+  setBtn("tJump",true);
+  setBtn("tCrouch",!air&&!veh);
+  setBtn("tUse",veh||(!air&&!!interactTarget));
+  setBtn("tBuild",!air&&!veh);
+  setBtn("tHeal",!air&&!veh&&(player.items.bandage+player.items.medkit)>0);
+  setBtn("tShield",!air&&!veh&&player.items.shield>0);
+  setBtn("tBomb",!air&&!veh&&player.items.bomb>0);
+  setBtn("tView",!veh);
+  setBtn("tMap",!air);
+  var jb=$("tJump");
+  if(jb) jb.textContent=air?(player.phase==="bus"?"降下":"開く"):"跳ぶ";
+}
+
 function updateHUD(dt){
   hudT-=(dt||0.016);
   var slow=(hudT<=0);
@@ -3807,6 +3935,7 @@ function updateHUD(dt){
         '<b style="color:'+co.css+'">'+cn+'</b></div>';
   }
   if(ch!==_lastConsum){ $("consum").innerHTML=ch; _lastConsum=ch; }
+  updateTouchButtons();
   var smut=MUTS[player.spiritMut||"normal"];
   var scss=(player.spiritMut&&player.spiritMut!=="normal")?smut.css:
            (player.spirit?SPIRITS[player.spirit].css:"#fff");
@@ -3948,6 +4077,10 @@ function cycleSlot(dir){
    INPUT
 ======================================================================= */
 var IS_TOUCH=("ontouchstart" in window)||(navigator.maxTouchPoints>0);
+function buzz(ms){
+  if(!IS_TOUCH) return;
+  try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){}
+}
 var TOUCH={active:false,mx:0,my:0,id:null,ox:0,oy:0,lookId:null,lx:0,ly:0,sprint:false};
 
 function bindTouch(){
@@ -3969,7 +4102,7 @@ function bindTouch(){
     if(d>R){ dx*=R/d; dy*=R/d; d=R; }
     knob.style.transform="translate("+dx+"px,"+dy+"px)";
     TOUCH.mx=dx/R; TOUCH.my=-dy/R;
-    TOUCH.sprint=(d>R*0.82);
+    TOUCH.sprint=(d>R*0.62);
   }
   function endStick(){
     TOUCH.active=false; TOUCH.id=null; TOUCH.mx=0; TOUCH.my=0; TOUCH.sprint=false;
@@ -3995,7 +4128,7 @@ function bindTouch(){
       var t=e.changedTouches[i];
       if(t.identifier===TOUCH.id) moveStick(t);
       else if(t.identifier===TOUCH.lookId){
-        var sens=0.0042*clamp(camera.fov/76,0.3,1);
+        var sens=0.0042*sensMul()*clamp(camera.fov/76,0.3,1);
         player.yaw-=(t.clientX-TOUCH.lx)*sens;
         player.pitch-=(t.clientY-TOUCH.ly)*sens;
         player.pitch=clamp(player.pitch,-1.45,1.45);
@@ -4046,6 +4179,7 @@ function bindTouch(){
         }
         else if(act==="reload") startReload();
         else if(act==="use") doInteract();
+        else if(act==="build") smartBuild();
         else if(act==="heal") useHeal();
         else if(act==="shield") useItem("shield");
         else if(act==="bomb") useItem("bomb");
@@ -4106,7 +4240,7 @@ function bindInput(){
 
   document.addEventListener("mousemove",function(e){
     if(!running) return;
-    var sens=0.0021*clamp(camera.fov/76,0.28,1);
+    var sens=0.0021*sensMul()*clamp(camera.fov/76,0.28,1);
     var mx=e.movementX, my=e.movementY;
     if(mx===undefined||my===undefined){
       mx=(lastMX===null)?0:e.clientX-lastMX;
@@ -4269,8 +4403,90 @@ function updateLook(dt){
   player.pitch=clamp(player.pitch,-1.45,1.45);
 }
 
+/* 弱めのエイムアシスト：照準の近くに敵がいるとゆっくり吸い寄せる */
+var aimV=new THREE.Vector3();
+function aimAssist(dt){
+  if(!IS_TOUCH) return;
+  if(player.phase!=="ground"||player.vehicle||paused) return;
+  var w=curWeapon();
+  if(!w) return;
+  camera.getWorldPosition(camPos);
+  camera.getWorldDirection(camDir);
+  var CONE=player.ads>0.5?0.10:0.14;     // 吸い付く角度（約6〜8度）
+  var best=null,bestA=CONE,i;
+  for(i=0;i<bots.length;i++){
+    var b=bots[i];
+    if(!b.alive||b.state!=="ground"||isMate(b)) continue;
+    aimV.set(b.mesh.position.x,b.mesh.position.y+1.3,b.mesh.position.z).sub(camPos);
+    var d=aimV.length();
+    if(d>75||d<1.5) continue;
+    aimV.multiplyScalar(1/d);
+    var dot=aimV.dot(camDir);
+    if(dot<0.9) continue;
+    var ang=Math.acos(clamp(dot,-1,1));
+    if(ang<bestA){ bestA=ang; best=b; }
+  }
+  if(!best) return;
+  var tx=best.mesh.position.x-camPos.x;
+  var ty=(best.mesh.position.y+1.3)-camPos.y;
+  var tz=best.mesh.position.z-camPos.z;
+  var len=Math.hypot(tx,ty,tz)||1;
+  var tyaw=Math.atan2(-tx,-tz);
+  var tpit=Math.asin(clamp(ty/len,-1,1));
+  var dyaw=((tyaw-player.yaw+Math.PI*3)%(Math.PI*2))-Math.PI;
+  var dpit=tpit-player.pitch;
+  var k=1-bestA/CONE;
+  var rate=Math.min(1,(player.ads>0.5?3.2:2.0)*k*k*dt);
+  player.yaw+=dyaw*rate;
+  player.pitch=clamp(player.pitch+dpit*rate,-1.45,1.45);
+}
+
+/* 近づくだけで拾う・開ける（スマホ） */
+function autoInteract(){
+  if(!IS_TOUCH||player.phase!=="ground"||player.vehicle) return;
+  var i,d;
+  for(i=0;i<chests.length;i++){
+    if(chests[i].opened) continue;
+    if(chests[i].pos.distanceTo(player.pos)<2.4){ openChest(chests[i]); break; }
+  }
+  for(i=pickups.length-1;i>=0;i--){
+    var pu=pickups[i];
+    if(pu.type!=="weapon") continue;
+    if(pu.mesh.position.distanceTo(player.pos)>2.3) continue;
+    var empty=-1,k;
+    for(k=0;k<3;k++) if(!player.weapons[k]){ empty=k; break; }
+    if(empty<0) continue;          // 空きが無いときは自動で持ち替えない
+    takeWeapon(pu);
+    break;
+  }
+}
+
+/* 1ボタン建築：壁→坂→床 を自動で選ぶ */
+function spaceFree(cx,cy,cz,sx,sy,sz){
+  tmpBox.min.set(cx-sx/2,cy-sy/2+0.05,cz-sz/2);
+  tmpBox.max.set(cx+sx/2,cy+sy/2-0.05,cz+sz/2);
+  var list=nearRecs(tmpBox.min.x,tmpBox.min.z,tmpBox.max.x,tmpBox.max.z);
+  for(var i=0;i<list.length;i++) if(list[i].box.intersectsBox(tmpBox)) return false;
+  return true;
+}
+function smartBuild(){
+  if(player.phase!=="ground"||player.vehicle) return;
+  if(player.mats<buildCost()){ sfx.dry(); showHarvest("そざいが足りない"); return; }
+  var t=buildTarget();
+  var keep=player.slot;
+  var horiz=Math.abs(Math.sin(t.yaw))>0.5;
+  var wx=t.cx+Math.sin(t.yaw)*(GRID/2), wz=t.cz+Math.cos(t.yaw)*(GRID/2);
+  if(spaceFree(wx,t.cy+GRID/2,wz,horiz?0.6:GRID,GRID,horiz?GRID:0.6)) player.slot=4;
+  else if(spaceFree(t.cx,t.cy+GRID/2,t.cz,GRID,GRID*0.9,GRID)) player.slot=5;
+  else player.slot=6;
+  placeBuild();
+  player.slot=keep;
+}
+
 function updatePlayer(dt){
   updateLook(dt);
+  aimAssist(dt);
+  autoInteract();
 
   if(player.phase==="dead"){
     player.respawnT-=dt;
@@ -4576,7 +4792,7 @@ function updateMateMarks(dt){
     box.appendChild(el);
     mmNodes.push(el);
   }
-  var W=window.innerWidth, H=window.innerHeight;
+  var W=viewW(), H=viewH();
   for(i=0;i<mmNodes.length;i++){
     var el2=mmNodes[i];
     if(i>=mates.length){ el2.style.display="none"; continue; }
@@ -4626,8 +4842,8 @@ function updateDamageNums(dt){
       dmgList.splice(i,1);
       continue;
     }
-    var x=(mmV.x*0.5+0.5)*window.innerWidth;
-    var y=(-mmV.y*0.5+0.5)*window.innerHeight;
+    var x=(mmV.x*0.5+0.5)*viewW();
+    var y=(-mmV.y*0.5+0.5)*viewH();
     d.el.style.transform="translate("+x+"px,"+y+"px) translate(-50%,-50%)";
     d.el.style.opacity=String(Math.max(0,1-d.t/0.85));
   }
@@ -5239,9 +5455,11 @@ function explodeBomb(b){
   shockRing(p,0xff8a3d);
   puff(p,8,1.2,0xffb070);
   puff(p,5,0.9,0x50565e);
+  sfx.at(p.x,p.y,p.z);
   sfx.noise(0.16,"lowpass",1800,0.7,0.85);
   sfx.tone(120,28,0.55,"sawtooth",0.45);
   sfx.noise(0.9,"lowpass",260,0.5,0.3,0.06);
+  sfx.clr();
 
   var R=11.5, MAXD=125, i;
   for(i=0;i<bots.length;i++){
@@ -5738,7 +5956,8 @@ function updateAir(dt){
     $("drop").classList.add("on");
     $("hud").classList.add("air");
     $("dropAlt").textContent=Math.round(p.y-heightAt(p.x,p.z))+" m";
-    $("dropMsg").textContent=keyLabel(KEYMAP.jump)+" キーで降下　（のこり "+Math.max(0,Math.ceil(bus.dur*0.94-bus.t))+"s）";
+    $("dropMsg").textContent=(IS_TOUCH?"「降下」ボタンで飛び降りる　（のこり ":
+      (keyLabel(KEYMAP.jump)+" キーで降下　（のこり "))+Math.max(0,Math.ceil(bus.dur*0.94-bus.t))+"s）";
     if(k>=0.94) jumpFromBus();
     return;
   }
@@ -5898,6 +6117,25 @@ function acquireTarget(b){
   b.target=null; b.los=false;
 }
 
+/* ボットの足場：段差1.1mまでなら登れる。屋根やスロープの上も歩ける */
+function botGround(x,z,curY){
+  var best=heightAt(x,z);
+  var list=nearRecs(x-0.42,z-0.42,x+0.42,z+0.42);
+  for(var i=0;i<list.length;i++){
+    var bb=list[i].box;
+    if(x<bb.min.x-0.42||x>bb.max.x+0.42||z<bb.min.z-0.42||z>bb.max.z+0.42) continue;
+    if(bb.max.y>best&&bb.max.y<=curY+1.15) best=bb.max.y;
+  }
+  return best;
+}
+function botBlockedAt(x,z,y){
+  tmpBox.min.set(x-0.42,y+0.45,z-0.42);
+  tmpBox.max.set(x+0.42,y+1.85,z+0.42);
+  var list=nearRecs(x-0.42,z-0.42,x+0.42,z+0.42);
+  for(var i=0;i<list.length;i++) if(list[i].box.intersectsBox(tmpBox)) return true;
+  return false;
+}
+
 function botBlocked(p,y){
   tmpBox.min.set(p.x-0.42,y+0.35,p.z-0.42);
   tmpBox.max.set(p.x+0.42,y+1.85,p.z+0.42);
@@ -5937,6 +6175,68 @@ function botOpenChest(b,c){
 }
 
 var losBudget=0;
+/* ボットが壁を立てる / 目の前の建築を壊す */
+function botCellAhead(b,fx,fz,dist){
+  var px=b.mesh.position.x+fx*dist, pz=b.mesh.position.z+fz*dist;
+  return {
+    cx:Math.floor(px/GRID)*GRID+GRID/2,
+    cz:Math.floor(pz/GRID)*GRID+GRID/2,
+    cy:Math.floor((b.mesh.position.y+0.3)/GRID)*GRID,
+    q:Math.round(Math.atan2(fx,fz)/(Math.PI/2))*(Math.PI/2)
+  };
+}
+function botBuildWall(b){
+  if(b.buildCD>0||b.mats<10) return false;
+  var yaw=b.mesh.rotation.y;
+  var t=botCellAhead(b,Math.sin(yaw),Math.cos(yaw),2.3);
+  var horiz=Math.abs(Math.sin(t.q))>0.5;
+  var wx=t.cx+Math.sin(t.q)*(GRID/2), wz=t.cz+Math.cos(t.q)*(GRID/2);
+  if(!spaceFree(wx,t.cy+GRID/2,wz,horiz?0.6:GRID,GRID,horiz?GRID:0.6)) return false;
+  var mesh=new THREE.Mesh(new THREE.BoxGeometry(GRID,GRID,0.4),MAT.build);
+  mesh.position.set(wx,t.cy+GRID/2,wz);
+  mesh.rotation.y=t.q;
+  mesh.castShadow=mesh.receiveShadow=true;
+  scene.add(mesh);
+  addSolid(mesh,true);
+  b.mats-=10; b.buildCD=rand(2.6,5.5);
+  if(b.mesh.position.distanceTo(player.pos)<45){
+    sfx.at(b.mesh.position.x,b.mesh.position.y+1,b.mesh.position.z);
+    sfx.build(); sfx.clr();
+  }
+  return true;
+}
+function botBuildRamp(b){
+  if(b.buildCD>0||b.mats<10) return false;
+  var yaw=b.mesh.rotation.y;
+  var t=botCellAhead(b,Math.sin(yaw),Math.cos(yaw),2.6);
+  if(!spaceFree(t.cx,t.cy+GRID/2,t.cz,GRID,GRID*0.9,GRID)) return false;
+  makeRampAt(t.cx,t.cy,t.cz,t.q,true);
+  b.mats-=10; b.buildCD=rand(1.6,3.2);
+  return true;
+}
+function botBreakAhead(b,mx,mz){
+  if(b.breakCD>0) return;
+  b.breakCD=0.5;
+  var from=b.mesh.position.clone(); from.y+=1.2;
+  var dir=new THREE.Vector3(mx,0,mz);
+  if(dir.lengthSq()<0.01) return;
+  dir.normalize();
+  botRay.set(from,dir);
+  botRay.far=3.2;
+  var hits=botRay.intersectObjects(hitMeshes,false);
+  for(var i=0;i<hits.length;i++){
+    var rec=hits[i].object.userData.rec;
+    if(rec&&rec.built){
+      damageBuild(rec,60);
+      if(b.mesh.position.distanceTo(player.pos)<45){
+        sfx.at(hits[i].point.x,hits[i].point.y,hits[i].point.z);
+        sfx.impact(); sfx.clr();
+      }
+      return;
+    }
+  }
+}
+
 function updateBots(dt){
   losBudget=(TOTAL>40)?3:6;
   if(bus.active){
@@ -6043,6 +6343,9 @@ function updateBots(dt){
     }
 
     // 目標の再選定
+    if(b.buildCD>0) b.buildCD-=dt;
+    if(b.breakCD>0) b.breakCD-=dt;
+
     b.targetT-=dt;
     if(b.targetT<=0){
       if(losBudget>0){
@@ -6083,6 +6386,9 @@ function updateBots(dt){
       }
       b.mesh.rotation.y=Math.atan2(nx,nz);
 
+      // 相手が高い所にいたらスロープを架けて登る
+      var tpY=(b.target===PLAYER_T)?player.pos.y:b.target.mesh.position.y;
+      if(tpY-bp.y>3.2&&dist<26&&Math.random()<0.55) botBuildRamp(b);
       var inRange=(dist>=b.wm.min&&dist<=b.wm.max);
       if(b.reactT>0) b.reactT-=dt;
       else if(inRange){
@@ -6110,16 +6416,19 @@ function updateBots(dt){
     }
 
     var sp=b.speed*(needZone?1.55:(engaging?1:1.2));
-    var ox=bp.x, oz=bp.z, gy=heightAt(bp.x,bp.z);
-    bp.x+=mx*sp*dt;
-    if(botBlocked(bp,gy)) bp.x=ox;
-    bp.z+=mz*sp*dt;
-    if(botBlocked(bp,gy)) bp.z=oz;
+    var ox=bp.x, oz=bp.z;
+    var nx2=bp.x+mx*sp*dt, ng=botGround(nx2,bp.z,bp.y);
+    if(!botBlockedAt(nx2,bp.z,ng)) bp.x=nx2;
+    var nz2=bp.z+mz*sp*dt; ng=botGround(bp.x,nz2,bp.y);
+    if(!botBlockedAt(bp.x,nz2,ng)) bp.z=nz2;
     if(bp.x===ox&&bp.z===oz){
       b.stuck=(b.stuck||0)+dt;
+      // 詰まったら壁を壊すか、横へ回る
+      if(b.stuck>0.9&&b.wep) botBreakAhead(b,mx,mz);
       var sgn2=(b.stuck>1.2)?-1:1;
-      bp.x+=-mz*sp*dt*1.8*sgn2; bp.z+=mx*sp*dt*1.8*sgn2;
-      if(botBlocked(bp,gy)){ bp.x=ox; bp.z=oz; }
+      var sx2=bp.x-mz*sp*dt*1.8*sgn2, sz2=bp.z+mx*sp*dt*1.8*sgn2;
+      var sg2=botGround(sx2,sz2,bp.y);
+      if(!botBlockedAt(sx2,sz2,sg2)){ bp.x=sx2; bp.z=sz2; }
       if(b.stuck>3.5){   // どうしても抜けられないときは少し押し出す
         bp.x+=zdirx*1.2+rand(-0.6,0.6);
         bp.z+=zdirz*1.2+rand(-0.6,0.6);
@@ -6127,13 +6436,18 @@ function updateBots(dt){
       }
     }else b.stuck=0;
     if(b.push){
-      var pox=bp.x, poz=bp.z, pgy=heightAt(bp.x,bp.z);
-      bp.x+=b.push.x*dt; if(botBlocked(bp,pgy)){ bp.x=pox; b.push.x*=-0.3; }
-      bp.z+=b.push.z*dt; if(botBlocked(bp,pgy)){ bp.z=poz; b.push.z*=-0.3; }
+      var pox=bp.x, poz=bp.z;
+      var pnx=bp.x+b.push.x*dt, png=botGround(pnx,bp.z,bp.y);
+      if(!botBlockedAt(pnx,bp.z,png)) bp.x=pnx; else b.push.x*=-0.3;
+      var pnz=bp.z+b.push.z*dt; png=botGround(bp.x,pnz,bp.y);
+      if(!botBlockedAt(bp.x,pnz,png)) bp.z=pnz; else b.push.z*=-0.3;
       b.push.multiplyScalar(Math.pow(0.035,dt));
       if(b.push.lengthSq()<0.6) b.push=null;
     }
-    bp.y=heightAt(bp.x,bp.z);
+    // 高さ：登りは即、下りは落下風に滑らかに
+    var tgy=botGround(bp.x,bp.z,bp.y);
+    if(tgy>bp.y) bp.y=Math.min(tgy,bp.y+9*dt+0.05);
+    else bp.y+=Math.max(tgy-bp.y,-16*dt);
 
     var pdist=Math.hypot(bp.x-player.pos.x,bp.z-player.pos.z);
     var vis=pdist<(SIMPLE_BOTS?115:175);
@@ -6168,6 +6482,7 @@ function updateBots(dt){
 function botTakeDamage(victim,dmg,killerName,point){
   if(!victim.alive) return;
   victim.hp-=dmg;
+  if(Math.random()<0.45) botBuildWall(victim);
   if(point&&point.distanceTo(player.pos)<70) puff(point,2,0.14,0x8b1f1f);
   if(victim.hp<=0) killBot(victim,killerName);
 }
@@ -6188,7 +6503,11 @@ function botShoot(b,t,dist){
   // プレイヤーから遠い撃ち合いは描画も音も省く
   var distToPlayer=b.mesh.position.distanceTo(player.pos);
   if(distToPlayer<170) tracer(from,to,hit?0xffb98a:0xffd8b8,0.009);
-  if(distToPlayer<200) sfx.distant(distToPlayer*(b.wep==="sniper"?0.75:(b.wep==="shotgun"?1.1:1)));
+  if(distToPlayer<200){
+    sfx.at(from.x,from.y,from.z);
+    sfx.distant(distToPlayer*(b.wep==="sniper"?0.75:(b.wep==="shotgun"?1.1:1)));
+    sfx.clr();
+  }
 
   if(hit){
     var bd=rand(DIFF.dmg[0],DIFF.dmg[1])*b.wm.dmg*(b.boss?1.55:1);
@@ -6317,6 +6636,7 @@ function endGame(win){
   if(ended) return;
   ended=true; running=false;
   endGrapple();
+  bgm.setMode("lobby");
   if(document.exitPointerLock) document.exitPointerLock();
   $("hud").classList.remove("on");
   var alive=0,i; for(i=0;i<bots.length;i++) if(bots[i].alive) alive++;
@@ -6375,6 +6695,22 @@ function animate(){
     }
   }
 
+  if(actx&&actx.listener&&camera){
+    try{
+      var L=actx.listener;
+      camera.getWorldPosition(camPos);
+      camera.getWorldDirection(camDir);
+      if(L.positionX){
+        L.positionX.value=camPos.x; L.positionY.value=camPos.y; L.positionZ.value=camPos.z;
+        L.forwardX.value=camDir.x; L.forwardY.value=camDir.y; L.forwardZ.value=camDir.z;
+        L.upX.value=0; L.upY.value=1; L.upZ.value=0;
+      }else{
+        L.setPosition(camPos.x,camPos.y,camPos.z);
+        L.setOrientation(camDir.x,camDir.y,camDir.z,0,1,0);
+      }
+    }catch(e){}
+  }
+
   if(lobbyActive&&lobbyScene){
     lobbyT+=dt;
     lobbyPivot.rotation.y=Math.sin(lobbyT*0.42)*0.2;
@@ -6390,7 +6726,7 @@ function animate(){
 function init(){
   renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:"high-performance"});
   renderer.setPixelRatio(Math.min(window.devicePixelRatio,Q().pr));
-  renderer.setSize(window.innerWidth,window.innerHeight);
+  renderer.setSize(viewW(),viewH());
   renderer.shadowMap.enabled=Q().shadow;
   renderer.shadowMap.type=THREE.PCFSoftShadowMap;
   renderer.outputEncoding=THREE.sRGBEncoding;
@@ -6398,7 +6734,7 @@ function init(){
   renderer.toneMappingExposure=1.05;
   document.body.appendChild(renderer.domElement);
 
-  camera=new THREE.PerspectiveCamera(76,window.innerWidth/window.innerHeight,0.06,1400);
+  camera=new THREE.PerspectiveCamera(76,viewW()/viewH(),0.06,1400);
   camera.rotation.order="YXZ";
   clock=new THREE.Clock();
   raycaster=new THREE.Raycaster();
@@ -6438,13 +6774,14 @@ function init(){
     if(!/n=\d+/.test(String(location.hash))&&TOTAL>13) TOTAL=13;
   }
 
-  window.addEventListener("resize",function(){
-    camera.aspect=window.innerWidth/window.innerHeight;
-    camera.updateProjectionMatrix();
-    if(lobbyCam){ lobbyCam.aspect=camera.aspect; lobbyCam.updateProjectionMatrix(); }
-    renderer.setSize(window.innerWidth,window.innerHeight);
-  });
+  window.addEventListener("resize",resizeRenderer);
+  window.addEventListener("orientationchange",function(){ setTimeout(resizeRenderer,250); });
+  if(window.visualViewport){
+    window.visualViewport.addEventListener("resize",resizeRenderer);
+    window.visualViewport.addEventListener("scroll",resizeRenderer);
+  }
 
+  if(IS_TOUCH&&$("pwaTip")) $("pwaTip").style.display="block";
   buildLobby();
   loadProfileAsync(function(){
     if(!isUnlocked("skin",SKIN_I)) SKIN_I=0;
@@ -6465,6 +6802,51 @@ function init(){
   $("startScreen").classList.remove("hidden");
   syncHash();
 }
+
+var bgm={
+  on:((String(location.hash).match(/bg=(\d)/)||[])[1]!=="0"),
+  osc:[], gain:null, filt:null, timer:null, step:0, mode:"lobby",
+  prog:{ lobby:[110,98,123.47,87.31], match:[110,116.54,98,130.81] },
+  start:function(mode){
+    if(!actx||!this.on) return;
+    if(mode) this.mode=mode;
+    if(this.gain){ this.setChord(); return; }
+    this.gain=actx.createGain();
+    this.gain.gain.value=0.0001;
+    this.filt=actx.createBiquadFilter();
+    this.filt.type="lowpass"; this.filt.frequency.value=600; this.filt.Q.value=0.6;
+    this.filt.connect(this.gain);
+    this.gain.connect(masterGain);
+    for(var i=0;i<4;i++){
+      var o=actx.createOscillator();
+      o.type=(i<2)?"sawtooth":"triangle";
+      o.detune.value=(i%2)?8:-8;
+      var g=actx.createGain();
+      g.gain.value=(i<2)?0.075:0.055;
+      o.connect(g); g.connect(this.filt);
+      o.start();
+      this.osc.push({o:o,g:g});
+    }
+    this.gain.gain.linearRampToValueAtTime(0.38,actx.currentTime+3.5);
+    this.setChord();
+    var self=this;
+    this.timer=setInterval(function(){ self.step++; self.setChord(); },7000);
+  },
+  setChord:function(){
+    if(!actx||!this.osc.length) return;
+    var pr=this.prog[this.mode]||this.prog.lobby;
+    var base=pr[this.step%pr.length];
+    var f=[base,base*1.5,base*2,base*3];
+    for(var i=0;i<this.osc.length;i++)
+      this.osc[i].o.frequency.setTargetAtTime(f[i],actx.currentTime,1.4);
+    this.filt.frequency.setTargetAtTime(this.mode==="match"?1150:620,actx.currentTime,2.2);
+  },
+  setMode:function(m){ this.mode=m; this.setChord(); },
+  stop:function(){
+    if(this.gain) this.gain.gain.setTargetAtTime(0.0001,actx.currentTime,0.8);
+    if(this.timer){ clearInterval(this.timer); this.timer=null; }
+  }
+};
 
 var lobbyScene=null,lobbyCam=null,lobbyChar=null,lobbyActive=true,lobbyT=0,lobbyPivot=null;
 
@@ -7243,6 +7625,13 @@ function pickerHTML(){
   h+='<div class="prow"><span class="plabel">画質</span><span class="pbtns">';
   for(i=0;i<QUALS.length;i++) h+='<button class="pbtn" data-k="qual" data-v="'+QUALS[i].k+'">'+QUALS[i].label+'</button>';
   h+='</span></div>';
+  h+='<div class="prow"><span class="plabel">BGM</span><span class="pbtns">';
+  h+='<button class="pbtn" data-k="bgm" data-v="1">オン</button>';
+  h+='<button class="pbtn" data-k="bgm" data-v="0">オフ</button>';
+  h+='</span></div>';
+  h+='<div class="prow"><span class="plabel">視点感度</span><span class="pbtns">';
+  for(i=0;i<SENSES.length;i++) h+='<button class="pbtn" data-k="sens" data-v="'+SENSES[i].k+'">'+SENSES[i].label+'</button>';
+  h+='</span></div>';
   h+='<div class="prow"><span class="plabel">スコープ</span><span class="pbtns">';
   for(i=0;i<SCOPES.length;i++) h+='<button class="pbtn" data-k="scope" data-v="'+i+'">'+SCOPES[i].name+'</button>';
   h+='</span></div>';
@@ -7257,7 +7646,8 @@ function refreshPickers(){
     var k=els[i].getAttribute("data-k"), v=els[i].getAttribute("data-v");
     var cur=(k==="map")?MAP_KEY:(k==="count")?String(TOTAL):(k==="scope")?String(SCOPE_I)
            :(k==="mode")?String(TEAM_SIZE):(k==="rule")?GAMEMODE
-           :(k==="qual")?QUALITY:DIFF_KEY;
+           :(k==="qual")?QUALITY:(k==="sens")?SENS_K
+           :(k==="bgm")?(bgm.on?"1":"0"):DIFF_KEY;
     els[i].classList.toggle("sel",v===cur);
   }
   $("diffNote").innerHTML=MAPCFG.note+"<br>"+DIFF.note+
@@ -7277,6 +7667,11 @@ function selectOpt(k,v){
   else if(k==="scope"){ SCOPE_I=parseInt(v,10); }
   else if(k==="mode"){ TEAM_SIZE=parseInt(v,10); }
   else if(k==="qual"){ QUALITY=v; applyQualityRuntime(); }
+  else if(k==="sens"){ SENS_K=v; }
+  else if(k==="bgm"){
+    bgm.on=(v==="1");
+    if(bgm.on) bgm.start(); else bgm.stop();
+  }
   else if(k==="rule"){
     GAMEMODE=v;
     if(isReload()){
@@ -7310,6 +7705,8 @@ function buildMatch(){
 
 function start(){
   sfx.init();
+  bgm.start("match");
+  bgm.setMode("match");
   $("startScreen").classList.add("hidden");
   $("loading").classList.remove("hidden");
   $("loading").textContent="「"+MAPS[MAP_KEY].label+"」を生成中";
@@ -7318,7 +7715,16 @@ function start(){
     buildMatch();
     $("loading").classList.add("hidden");
     $("hud").classList.add("on");
-    if(IS_TOUCH){ $("touch").classList.add("on"); noLockMode(); }
+    if(IS_TOUCH){
+      $("touch").classList.add("on");
+      noLockMode();
+      try{
+        var de=document.documentElement;
+        if(de.requestFullscreen) de.requestFullscreen();
+        else if(de.webkitRequestFullscreen) de.webkitRequestFullscreen();
+      }catch(e){}
+      setTimeout(resizeRenderer,400);
+    }
     if(!IS_TOUCH){
       try{ var pl=renderer.domElement.requestPointerLock(); if(pl&&pl.catch) pl.catch(function(){}); }catch(e){}
     }
@@ -7338,6 +7744,16 @@ function start(){
 
 $("resumeBtn").addEventListener("click",function(){ setPause(false); });
 $("quitBtn").addEventListener("click",function(){ saveProfile(); location.reload(); });
+(function(){
+  var once=function(){
+    sfx.init();
+    bgm.start("lobby");
+    document.removeEventListener("pointerdown",once);
+    document.removeEventListener("touchstart",once);
+  };
+  document.addEventListener("pointerdown",once);
+  document.addEventListener("touchstart",once);
+})();
 $("startBtn").addEventListener("click",start);
 $("againBtn").addEventListener("click",function(){
   saveProfile();
