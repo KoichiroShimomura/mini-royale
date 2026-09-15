@@ -147,6 +147,7 @@
   /* ---------------- screens ---------------- */
   .screen{position:fixed;inset:0;display:flex;flex-direction:column;
     align-items:center;justify-content:center;text-align:center;padding:28px;z-index:10;
+    overflow-y:auto;
     background:linear-gradient(180deg,#12161b 0%,#080a0c 100%)}
   .screen.hidden{display:none}
   .kicker{font-size:10px;letter-spacing:.5em;color:var(--hot);margin-bottom:18px}
@@ -438,12 +439,20 @@
   html.touch #hints{display:none}
   html.touch #mapWrap{width:92px;height:92px;left:10px;top:10px;border-width:1px}
   html.touch #mapInfo{display:none}
+  html.touch #diffTag{display:none}
+  html.touch #lockmsg{display:none!important}
+  html.touch #edgeL,html.touch #edgeR{display:none!important}
   html.touch #topbar{top:6px;left:auto;right:150px;transform:none;gap:1px}
   html.touch .chip{padding:3px 8px;min-width:54px}
   html.touch .chip b{font-size:13px}
   html.touch .chip em{font-size:7px;letter-spacing:.1em}
   html.touch #feed{top:108px;left:10px;right:auto;width:150px;text-align:left;font-size:9px}
   html.touch #feed div{padding:1px 0}
+  html.touch #mates{left:10px;bottom:112px;width:118px}
+  html.touch #mates .mate{font-size:8px;margin-bottom:4px}
+  html.touch #prompt{bottom:196px;font-size:10px;padding:6px 12px}
+  html.touch #harvestPop{font-size:11px;top:56%}
+  html.touch #hitmark{transform:translate(-50%,-50%) rotate(45deg) scale(.8)}
   html.touch #vitals{left:10px;bottom:74px;width:150px}
   html.touch .vrow{font-size:8px}
   html.touch .vrow b{font-size:12px}
@@ -477,6 +486,36 @@
   html.touch .tab{padding:9px 13px;font-size:11px}
   html.touch .pbtn{padding:9px 13px;font-size:11px}
   html.touch .plabel{width:62px;font-size:10px}
+
+  /* スマホ：メニュー系の画面は縦スクロールできるようにする */
+  html.touch .screen:not(.hidden){display:block;overflow-y:auto;overflow-x:hidden;
+    touch-action:pan-y;-webkit-overflow-scrolling:touch;
+    padding:14px 16px 40px;text-align:left}
+  html.touch #pausePanel{width:auto;max-width:none}
+  html.touch #lobbyPanel{width:auto;max-width:none}
+  html.touch #startScreen .pane,html.touch #startScreen #selSummary,
+  html.touch #startScreen .diffnote,html.touch #startScreen .tabs,
+  html.touch #startScreen #lvBar{max-width:64%}
+  html.touch #startScreen h1{max-width:64%}
+  html.touch #endScreen h1,html.touch #pausePanel h1{font-size:26px;letter-spacing:.08em}
+  html.touch #endScreen .rule,html.touch #pausePanel .rule{margin:10px 0}
+  html.touch #resultSub{font-size:11px;margin:8px 0 10px}
+  html.touch #xpPanel{width:100%;max-width:360px;font-size:11px;line-height:1.75;
+    margin:8px 0 10px}
+  html.touch #lvUp{font-size:11px;line-height:1.7;margin-bottom:14px}
+  html.touch #againBtn,html.touch #startBtn,html.touch #pauseBtns button{
+    padding:14px 30px;font-size:12px;letter-spacing:.18em;margin-bottom:14px}
+  html.touch .pickers{gap:10px}
+  html.touch .prow{flex-wrap:wrap;gap:6px}
+  html.touch .diffnote{font-size:11px;margin:10px 0}
+  html.touch .keys{grid-template-columns:1fr;gap:5px;font-size:11px}
+  html.touch .passgrid{max-height:200px}
+  html.touch .tier{width:76px;font-size:8px}
+  html.touch .shopcard{width:150px}
+  html.touch .lockgrid{gap:4px}
+  html.touch .lockitem{padding:8px 10px;font-size:10px}
+  html.touch #lvBar{flex-wrap:wrap;gap:8px;padding:8px 10px}
+  html.touch #lvTrack{max-width:160px}
 
   #rotateHint{position:fixed;inset:0;z-index:30;display:none;
     background:#0b0d0f;color:#e6eaee;align-items:center;justify-content:center;
@@ -574,7 +613,7 @@
     <button class="tab" data-tab="shop">ショップ</button>
     <button class="tab" data-tab="dex">図鑑</button>
     <button class="tab" data-tab="locker">ロッカー</button>
-    <button class="tab" data-tab="keys">キー設定</button>
+    <button class="tab" id="tabKeys" data-tab="keys">キー設定</button>
   </div>
 
   <div class="pane on" id="paneplay">
@@ -660,8 +699,12 @@
   <button class="tbtn" id="tMenu" data-t="menu">≡</button>
 </div>
 
-<div id="rotateHint">スマートフォンは<br><b>横向き</b>にしてください<br>
-  <span style="font-size:12px;color:#8d979f">画面を回転させると自動で始まります</span></div>
+<div id="rotateHint"><div>
+  スマートフォンは<br><b>横向き</b>にしてください<br>
+  <span style="font-size:12px;color:#8d979f">画面を回転させると自動で戻ります</span><br>
+  <button id="rotateSkip" style="margin-top:18px;padding:12px 26px;font-size:12px;
+    letter-spacing:.18em">このまま続ける</button>
+</div></div>
 
 <div class="screen hidden" id="pauseScreen">
   <div id="pausePanel">
@@ -682,8 +725,8 @@
   <p id="resultSub"></p>
   <div id="xpPanel"></div>
   <div id="lvUp"></div>
-  <div class="pickers" id="pickEnd"></div>
   <button id="againBtn">もう一度</button>
+  <div class="pickers" id="pickEnd"></div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -4208,10 +4251,17 @@ function bindTouch(){
   }
 
   // ---- 画面の向き ----
+  var rotateSkipped=false;
   function checkRotate(){
-    var portrait=window.innerHeight>window.innerWidth;
-    $("rotateHint").classList.toggle("on",portrait);
+    var portrait=viewH()>viewW();
+    $("rotateHint").classList.toggle("on",portrait&&!rotateSkipped);
   }
+  var rs=$("rotateSkip");
+  if(rs) rs.addEventListener("click",function(){
+    rotateSkipped=true;
+    $("rotateHint").classList.remove("on");
+    resizeRenderer();
+  });
   window.addEventListener("resize",checkRotate);
   window.addEventListener("orientationchange",function(){ setTimeout(checkRotate,300); });
   checkRotate();
@@ -6660,6 +6710,7 @@ function endGame(win){
     : place+"位 ／ "+units+unitName+"中　／　"+player.kills+"人を撃破";
 
   awardXP(win,place,units);
+  if(IS_TOUCH) $("touch").classList.remove("on");
   $("endScreen").classList.remove("hidden");
 }
 
@@ -6781,7 +6832,10 @@ function init(){
     window.visualViewport.addEventListener("scroll",resizeRenderer);
   }
 
-  if(IS_TOUCH&&$("pwaTip")) $("pwaTip").style.display="block";
+  if(IS_TOUCH){
+    if($("pwaTip")) $("pwaTip").style.display="block";
+    if($("tabKeys")) $("tabKeys").style.display="none";   // キーボードが無いので非表示
+  }
   buildLobby();
   loadProfileAsync(function(){
     if(!isUnlocked("skin",SKIN_I)) SKIN_I=0;
@@ -7590,6 +7644,7 @@ function setPause(on){
   if(on===paused) return;
   paused=on;
   $("pauseScreen").classList.toggle("hidden",!paused);
+  if(IS_TOUCH) $("touch").classList.toggle("on",!paused);
   if(paused){
     buildPauseKeys();
     mouseDown=false; player.adsWant=0;
@@ -7603,6 +7658,7 @@ function noLockMode(){
   if(lockChecked) return;
   lockChecked=true;
   pointerLocked=false;
+  if(IS_TOUCH) return;          // タッチ端末では案内不要
   $("hud").classList.add("nolock");
   $("lockmsg").classList.add("on");
   setTimeout(function(){ $("lockmsg").classList.remove("on"); },9000);
